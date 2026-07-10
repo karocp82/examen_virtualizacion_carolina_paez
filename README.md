@@ -1,144 +1,197 @@
-# Examen Virtualización - Carolina Páez
-
-## Autor
+Examen Virtualización - Carolina Páez
+Autor
 
 Carolina Páez
 
----
+Descripción del Proyecto
 
-# Justificación Técnica
+Este proyecto corresponde al desarrollo de una solución basada en contenedores Docker desplegada sobre una instancia EC2 de AWS.
 
-Para esta solución opté por utilizar contenedores Docker debido a que permiten desplegar aplicaciones de forma rápida, ligera y portable. A diferencia de los hipervisores tradicionales, los contenedores comparten el sistema operativo del host, consumiendo menos recursos y facilitando la escalabilidad.
+La arquitectura implementada considera tres servicios principales:
 
-Docker Compose permite administrar múltiples servicios desde un único archivo de configuración, simplificando el despliegue y la comunicación entre componentes.
+NGINX como servidor web y proxy inverso.
+Aplicación Flask desarrollada en Python.
+Base de datos PostgreSQL con persistencia mediante volúmenes Docker.
 
-Respecto al modelo de nube, se utilizó una nube pública AWS debido a su disponibilidad inmediata, facilidad de administración y acceso remoto desde cualquier ubicación.
+La aplicación registra visitas y almacena la información en PostgreSQL, permitiendo conservar los datos incluso después de reiniciar los contenedores.
 
----
+Justificación Técnica
 
-# Arquitectura de la Solución
+Para esta solución opté por utilizar contenedores Docker debido a que permiten desplegar aplicaciones de forma rápida, ligera y portable. A diferencia de las máquinas virtuales tradicionales, los contenedores comparten el sistema operativo anfitrión, reduciendo el consumo de recursos y facilitando la administración.
 
-La solución implementada está compuesta por tres servicios:
+Docker Compose permite gestionar múltiples servicios desde un único archivo de configuración, simplificando la implementación y comunicación entre componentes.
 
-- NGINX como Reverse Proxy.
-- Aplicación Flask desarrollada sobre Python.
-- Base de datos PostgreSQL con persistencia mediante volumen Docker.
+Respecto al modelo de nube, se utilizó AWS EC2 debido a su disponibilidad inmediata, acceso remoto y facilidad para desplegar entornos de laboratorio y producción.
 
-## Flujo de funcionamiento
+Arquitectura de la Solución
 
-Usuario → NGINX → Aplicación Flask → PostgreSQL
+La solución implementada se compone de tres servicios:
 
-Cada visita registrada es almacenada en PostgreSQL y se mantiene incluso después de reiniciar los contenedores gracias al volumen persistente.
+NGINX
 
----
+Encargado de recibir las solicitudes HTTP y redirigirlas hacia la aplicación Flask.
 
-# Despliegue
+Aplicación Flask
 
-## Crear directorio
+Aplicación desarrollada en Python encargada de procesar las solicitudes y registrar visitas.
 
-```bash
-mkdir examen_virtualizacion
-cd examen_virtualizacion
-```
+PostgreSQL
 
-## Construir imagen de la aplicación
+Base de datos relacional utilizada para almacenar la información generada por la aplicación.
 
-```bash
-docker build -t myapp-image .
-```
+Flujo de funcionamiento
+Usuario
+   │
+   ▼
+NGINX
+   │
+   ▼
+Aplicación Flask
+   │
+   ▼
+PostgreSQL
+Tecnologías Utilizadas
+AWS EC2
+Amazon Linux 2023
+Docker
+Docker Compose
+Python Flask
+PostgreSQL 16
+NGINX Latest
+Git
+GitHub
+Estructura del Proyecto
+examen_virtualizacion/
+│
+├── app/
+│   ├── app.py
+│   └── requirements.txt
+│
+├── nginx/
+│   └── default.conf
+│
+├── evidencias/
+│
+├── Dockerfile
+│
+├── docker-compose.yml
+│
+└── README.md
+Evidencias
+Evidencia 1 – Creación de la instancia EC2
 
-## Levantar el stack completo
+Se creó una instancia EC2 sobre AWS Learner Lab que actuó como infraestructura base para desplegar la solución.
 
-```bash
-docker-compose up -d
-```
+![Creación EC2](evidencias/01_creacion_instancia_ec2.png)
+Evidencia 2 – Instalación de Docker
 
-## Verificar contenedores
+Se instaló Docker Engine en Amazon Linux 2023 para gestionar la ejecución de contenedores.
 
-```bash
-docker-compose ps
-```
+![Instalación Docker](evidencias/02_instalacion_docker.png)
+Evidencia 3 – Verificación del servicio Docker
 
-## Reiniciar servicios
+Se verificó que Docker se encontrara activo y operativo.
 
-```bash
-docker-compose restart
-```
+![Servicio Docker](evidencias/03_servicio_docker_activo.png)
+Evidencia 4 – Instalación de Docker Compose
 
-## Verificar funcionamiento
+Se instaló Docker Compose para administrar múltiples servicios desde un único archivo YAML.
 
-```bash
-curl http://localhost
-```
+![Docker Compose](evidencias/04_instalacion_docker_compose.png)
+Evidencia 5 – Creación del proyecto
 
----
+Se creó el directorio principal del proyecto y la estructura de trabajo.
 
-# Evidencias
+![Proyecto](evidencias/05_creacion_directorio_proyecto.png)
+Evidencia 6 – Configuración Git
 
-## 1. Instancia EC2 creada
+Se inicializó Git y se configuró la identidad del repositorio.
 
-![Instancia EC2](evidencias/ec2.png)
+![Git Configurado](evidencias/06_configuracion_git.png)
+Evidencia 7 – Asociación con GitHub
 
-La instancia EC2 fue creada en AWS Learner Lab utilizando Amazon Linux 2023.
+Se configuró el repositorio remoto para publicar la solución.
 
----
+![GitHub](evidencias/07_repositorio_remoto_github.png)
+Evidencia 8 – Despliegue mediante Docker Compose
 
-## 2. Docker Engine instalado
+Se ejecutó Docker Compose para crear la red, descargar imágenes y levantar los servicios.
 
-![Docker instalado](evidencias/docker_version.png)
+![Docker Compose Up](evidencias/08_docker_compose_up.png)
+Evidencia 9 – Contenedores activos
 
-Verificación de la instalación de Docker Engine en la instancia EC2.
+Se comprobó el funcionamiento simultáneo de los servicios:
 
----
+PostgreSQL
+Flask
+NGINX
+![Contenedores Activos](evidencias/09_contenedores_activos.png)
+Evidencia 10 – Imágenes Docker utilizadas
 
-## 3. Imágenes Docker construidas
+Se verificaron las imágenes descargadas y utilizadas por la solución.
 
-![Docker Images](evidencias/docker_images.png)
+![Docker Images](evidencias/10_imagenes_docker.png)
+Evidencia 11 – Creación del volumen persistente
 
-Se verifican las imágenes utilizadas para la solución.
+Se comprobó la existencia del volumen encargado de almacenar los datos de PostgreSQL.
 
----
+![Volumen PostgreSQL](evidencias/11_volumen_postgres.png)
+Evidencia 12 – Inspección del volumen
 
-## 4. Stack levantado con Docker Compose
+Se verificó la configuración interna y el punto de montaje del volumen persistente.
 
-![Docker Compose](evidencias/docker_compose_ps.png)
+![Volume Inspect](evidencias/12_volume_inspect.png)
+Evidencia 13 – Docker Inspect
 
-Los servicios PostgreSQL, Flask y NGINX se encuentran ejecutándose correctamente.
+Se revisó la configuración interna del contenedor de la aplicación Flask.
 
----
+![Docker Inspect](evidencias/13_docker_inspect_app.png)
+Evidencia 14 – Aplicación funcionando localmente
 
-## 5. Persistencia de datos
+Se validó el correcto funcionamiento de la aplicación mediante el comando curl desde la instancia EC2.
 
-### Antes del reinicio
+![Aplicación Local](evidencias/14_aplicacion_local.png)
+Evidencia 15 – Aplicación accesible desde navegador
 
-![Visitas antes](evidencias/visitas_antes.png)
+La aplicación quedó publicada mediante NGINX y accesible desde Internet utilizando la IP pública de la instancia.
 
-### Después del reinicio
+![Aplicación Web](evidencias/15_aplicacion_web.png)
+Evidencia 16 – Página publicada mediante NGINX
 
-![Visitas despues](evidencias/visitas_despues.png)
+Se verificó el acceso web desde un navegador externo.
 
-El contador continúa aumentando después del reinicio, demostrando la persistencia de datos mediante volumen Docker.
+![NGINX](evidencias/16_nginx_publicado.png)
+Evidencia 17 – Reinicio de contenedores
 
----
+Se reiniciaron los servicios utilizando Docker Compose para comprobar su recuperación automática.
 
-## 6. Docker Inspect
+![Reinicio](evidencias/17_reinicio_contenedores.png)
+Evidencia 18 – Persistencia de datos
 
-![Docker Inspect](evidencias/docker_inspect.png)
+Se comprobó que el contador continuó incrementándose después del reinicio, validando el uso correcto del volumen persistente asociado a PostgreSQL.
 
-Se verifica la configuración interna del contenedor mediante el comando docker inspect.
+![Persistencia](evidencias/18_persistencia_datos.png)
+Repositorio GitHub
 
----
+Repositorio utilizado para almacenar el código fuente y la documentación del proyecto:
 
-## 7. Aplicación funcionando
+https://github.com/karocp82/examen_virtualizacion_carolina_paez
+Resultados Obtenidos
 
-![Aplicacion funcionando](evidencias/aplicacion_funcionando.png)
+Durante la implementación se logró:
 
-La aplicación se encuentra accesible desde el navegador a través de la IP pública de la instancia EC2.
+Desplegar una arquitectura multicontenedor.
+Configurar comunicación entre servicios.
+Implementar persistencia mediante volúmenes Docker.
+Publicar la aplicación en AWS.
+Gestionar el proyecto mediante Git y GitHub.
+Validar el acceso web externo.
+Comprobar la recuperación automática de servicios.
+Verificar la persistencia de datos después de reinicios.
+Conclusión
 
----
+Durante esta evaluación implementé una solución basada en contenedores Docker sobre una instancia EC2 de AWS. La arquitectura considera NGINX como servidor web, una aplicación Flask desarrollada en Python y una base de datos PostgreSQL con almacenamiento persistente.
 
-# Conclusión
+Las pruebas realizadas permitieron validar el correcto funcionamiento de cada componente, la comunicación entre servicios, la persistencia de la información mediante volúmenes Docker y la publicación de la aplicación en Internet.
 
-Durante esta evaluación implementé una solución basada en contenedores Docker utilizando Docker Compose para orquestar múltiples servicios. La arquitectura permitió integrar una aplicación Flask, una base de datos PostgreSQL y un servidor NGINX como punto de acceso.
-
-Los resultados obtenidos demostraron la facilidad de despliegue, administración y portabilidad que ofrecen los contenedores, además de validar la persistencia de datos mediante volúmenes Docker. Finalmente, el uso de AWS como nube pública permitió publicar la solución de manera rápida y accesible desde Internet.
+Esta implementación demuestra las ventajas de la virtualización basada en contenedores, permitiendo desplegar aplicaciones de manera eficiente, portable y escalable utilizando tecnologías ampliamente utilizadas en entornos reales de infraestructura y plataformas tecnológicas.
